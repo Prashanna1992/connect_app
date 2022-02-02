@@ -1,10 +1,11 @@
 import 'package:camera/camera.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:pratham_app/CustomUI/ReplyMessage.dart';
 import 'package:pratham_app/CustomUI/UserMessage.dart';
 import 'package:pratham_app/Model/ChatModel.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:pratham_app/Pages/CameraPage.dart';
+import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 class IndividualPage extends StatefulWidget {
   const IndividualPage({Key? key, required this.chatModel}) : super(key: key);
@@ -16,6 +17,25 @@ class IndividualPage extends StatefulWidget {
 
 class _IndividualPageState extends State<IndividualPage> {
   bool show = false;
+  late IO.Socket socket;
+
+  void connect() {
+    socket = IO.io("http://192.168.10.68:5000", <String, dynamic>{
+      "transports": ["websocket"],
+      "autoconnect": false,
+    });
+    socket.connect();
+    socket.onConnect((data) => print("Connected"));
+    socket.emit("/test", "Hello world!");
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    print("Attempting to connect");
+    connect();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -111,86 +131,119 @@ class _IndividualPageState extends State<IndividualPage> {
             width: MediaQuery.of(context).size.width,
             child: Stack(
               children: [
-                ListView(
-                  children: [UserMessage()],
+                Container(
+                  height: MediaQuery.of(context).size.height - 146,
+                  child: ListView(
+                    shrinkWrap: true,
+                    children: const [
+                      UserMessage(),
+                      ReplyMessage(),
+                      UserMessage(),
+                      ReplyMessage(),
+                      UserMessage(),
+                      UserMessage(),
+                      ReplyMessage(),
+                      UserMessage(),
+                      ReplyMessage(),
+                      UserMessage(),
+                      UserMessage(),
+                      ReplyMessage(),
+                      UserMessage(),
+                      ReplyMessage(),
+                      UserMessage(),
+                    ],
+                  ),
                 ),
                 Align(
                   alignment: Alignment.bottomCenter,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      Row(
-                        children: [
-                          Container(
-                            width: MediaQuery.of(context).size.width - 55,
-                            child: Card(
-                              margin: const EdgeInsets.only(
-                                  left: 10, right: 3, bottom: 8),
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(25)),
-                              child: TextFormField(
-                                textAlignVertical: TextAlignVertical.center,
-                                keyboardType: TextInputType.multiline,
-                                maxLines: 5,
-                                minLines: 1,
-                                decoration: InputDecoration(
-                                    hintText: "Type message here...",
-                                    contentPadding: const EdgeInsets.all(10),
-                                    // prefixIcon: IconButton(
-                                    //   icon: Icon(Icons.emoji_emotions),
-                                    //   onPressed: () {
-                                    //     show = !show;
-                                    //     print(show);
-                                    //   },
-                                    // ),
-                                    suffixIcon: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        IconButton(
-                                            onPressed: () {
-                                              showModalBottomSheet(
-                                                  backgroundColor:
-                                                      Colors.transparent,
-                                                  context: context,
-                                                  builder: (builder) =>
-                                                      bottomSheet());
-                                            },
-                                            icon:
-                                                const Icon(Icons.attach_file)),
-                                        IconButton(
-                                            onPressed: () async {
-                                              await availableCameras().then(
-                                                (value) => Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        CameraPage(
-                                                      cameras: value,
+                      Container(
+                        color: Theme.of(context).colorScheme.primaryVariant,
+                        child: Row(
+                          children: [
+                            Container(
+                              width: MediaQuery.of(context).size.width - 55,
+                              child: Card(
+                                margin: const EdgeInsets.only(
+                                    left: 10, right: 3, bottom: 8, top: 5),
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(25)),
+                                child: TextFormField(
+                                  textAlignVertical: TextAlignVertical.center,
+                                  keyboardType: TextInputType.multiline,
+                                  maxLines: 5,
+                                  minLines: 1,
+                                  decoration: InputDecoration(
+                                      enabledBorder: const UnderlineInputBorder(
+                                        borderSide: BorderSide(
+                                            color: Colors.transparent),
+                                      ),
+                                      focusedBorder: const UnderlineInputBorder(
+                                        borderSide: BorderSide(
+                                            color: Colors.transparent),
+                                      ),
+                                      hintText: "Type message here...",
+                                      contentPadding: const EdgeInsets.all(10),
+                                      // prefixIcon: IconButton(
+                                      //   icon: Icon(Icons.emoji_emotions),
+                                      //   onPressed: () {
+                                      //     show = !show;
+                                      //     print(show);
+                                      //   },
+                                      // ),
+                                      suffixIcon: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          IconButton(
+                                              onPressed: () {
+                                                showModalBottomSheet(
+                                                    backgroundColor:
+                                                        Colors.transparent,
+                                                    context: context,
+                                                    builder: (builder) =>
+                                                        bottomSheet());
+                                              },
+                                              icon: const Icon(
+                                                  Icons.attach_file)),
+                                          IconButton(
+                                              onPressed: () async {
+                                                await availableCameras().then(
+                                                  (value) => Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          CameraPage(
+                                                        cameras: value,
+                                                      ),
                                                     ),
                                                   ),
-                                                ),
-                                              );
-                                            },
-                                            icon: const Icon(Icons.camera_alt))
-                                      ],
-                                    )),
+                                                );
+                                              },
+                                              icon:
+                                                  const Icon(Icons.camera_alt))
+                                        ],
+                                      )),
+                                ),
                               ),
                             ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(bottom: 8, right: 2),
-                            child: CircleAvatar(
-                              radius: 25,
-                              backgroundColor:
-                                  const Color.fromRGBO(15, 185, 177, 1),
-                              child: IconButton(
-                                icon: const Icon(Icons.mic),
-                                color: Colors.white,
-                                onPressed: () {},
+                            Padding(
+                              padding:
+                                  const EdgeInsets.only(bottom: 8, right: 2),
+                              child: CircleAvatar(
+                                radius: 25,
+                                backgroundColor:
+                                    const Color.fromRGBO(15, 185, 177, 1),
+                                child: IconButton(
+                                  icon: const Icon(Icons.mic),
+                                  color: Colors.white,
+                                  onPressed: () {},
+                                ),
                               ),
-                            ),
-                          )
-                        ],
+                            )
+                          ],
+                        ),
                       ),
                     ],
                   ),

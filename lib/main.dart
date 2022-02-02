@@ -17,15 +17,16 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       theme: ThemeData(
           colorScheme: ColorScheme.fromSwatch().copyWith(
-            primary: Color.fromRGBO(15, 185, 177, 1),
+            primary: const Color.fromRGBO(15, 185, 177, 1.0),
             //rgb(15, 185, 177) - Turquoise Topaz
-            secondary: Color.fromRGBO(69, 170, 242, 1.0),
+            secondary: const Color.fromRGBO(69, 170, 242, 1.0),
             //rgb(69, 170, 242)
-            background: Color.fromRGBO(200, 241, 229, 1),
+            background: const Color.fromRGBO(200, 241, 229, 1),
+            primaryVariant: const Color.fromRGBO(129, 236, 236, 1.0),
           ),
           // primaryColor: Color.fromRGBO(15, 185, 177, 1),
           // secondaryHeaderColor: Color.fromRGBO(69, 170, 242, 1),
-          backgroundColor: Color.fromRGBO(200, 241, 229, 1.0),
+          backgroundColor: const Color.fromRGBO(200, 241, 229, 1.0),
           fontFamily: "Raleway",
           brightness: Brightness.light),
       home: const HomeScreen(),
