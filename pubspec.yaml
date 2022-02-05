@@ -70,6 +70,8 @@ flutter:
     - assets/person.svg
     - assets/bg1.jpg
     - assets/bg2.jpg
+    - assets/images/
+    - assets/icons/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

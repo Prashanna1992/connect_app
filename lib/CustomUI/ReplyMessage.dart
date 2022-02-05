@@ -2,8 +2,8 @@
 import 'package:flutter/material.dart';
 
 class ReplyMessage extends StatelessWidget {
-  const ReplyMessage({Key? key}) : super(key: key);
-
+  const ReplyMessage({Key? key, required this.message}) : super(key: key);
+  final String message;
   @override
   Widget build(BuildContext context) {
     return Align(
@@ -20,18 +20,18 @@ class ReplyMessage extends StatelessWidget {
           color: Theme.of(context).colorScheme.secondary,
           margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
           child: Stack(
-            children: const [
+            children: [
               Padding(
-                padding:
-                    EdgeInsets.only(top: 15, bottom: 15, left: 15, right: 15),
+                padding: const EdgeInsets.only(
+                    top: 15, bottom: 15, left: 15, right: 15),
                 child: Text(
-                  "Hello user, I am the one replying to your messages! The replies look like THIS!",
-                  style: TextStyle(
+                  message,
+                  style: const TextStyle(
                     fontSize: 15,
                   ),
                 ),
               ),
-              Positioned(
+              const Positioned(
                 bottom: 2,
                 right: 20,
                 child: Text(

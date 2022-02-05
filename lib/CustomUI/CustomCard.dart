@@ -5,8 +5,12 @@ import 'package:pratham_app/Model/ChatModel.dart';
 import 'package:pratham_app/Screens/IndividualPage.dart';
 
 class CustomCard extends StatelessWidget {
-  const CustomCard({Key? key, required this.chatModel}) : super(key: key);
+  const CustomCard(
+      {Key? key, required this.chatModel, required this.sourceChat})
+      : super(key: key);
   final ChatModel chatModel;
+  final ChatModel sourceChat;
+
   @override
   Widget build(BuildContext context) {
     return InkWell(
@@ -16,6 +20,7 @@ class CustomCard extends StatelessWidget {
             MaterialPageRoute(
                 builder: (context) => IndividualPage(
                       chatModel: chatModel,
+                      sourceChat: sourceChat,
                     )));
       },
       child: Column(

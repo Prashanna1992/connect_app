@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 class UserMessage extends StatelessWidget {
-  const UserMessage({Key? key}) : super(key: key);
-
+  const UserMessage({Key? key, required this.message}) : super(key: key);
+  final String message;
   @override
   Widget build(BuildContext context) {
     return Align(
@@ -20,12 +20,12 @@ class UserMessage extends StatelessWidget {
           margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
           child: Stack(
             children: [
-              const Padding(
-                padding:
-                    EdgeInsets.only(top: 15, bottom: 15, left: 15, right: 15),
+              Padding(
+                padding: const EdgeInsets.only(
+                    top: 15, bottom: 15, left: 15, right: 15),
                 child: Text(
-                  "Hello, I am the user, and this is how my messages will look! Cool! However, this is just a placeholder, before we finalize the styling from the widget page itself!",
-                  style: TextStyle(
+                  message,
+                  style: const TextStyle(
                     fontSize: 15,
                   ),
                 ),

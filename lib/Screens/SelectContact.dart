@@ -26,7 +26,7 @@ class _SelectContactState extends State<SelectContact> {
         title: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
+          children: const [
             Text(
               "Select Contact",
               style: TextStyle(fontSize: 19, fontWeight: FontWeight.bold),
@@ -69,15 +69,17 @@ class _SelectContactState extends State<SelectContact> {
         ],
       ),
       body: Padding(
-        padding: EdgeInsets.only(top: 10),
+        padding: const EdgeInsets.only(top: 10),
         child: ListView.builder(
             itemCount: contacts.length + 2,
             itemBuilder: (context, index) {
               if (index == 0) {
                 return InkWell(
                   onTap: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (builder) => CreateGroup()));
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (builder) => const CreateGroup()));
                   },
                   child: const ButtonCard(
                     name: "New Group",

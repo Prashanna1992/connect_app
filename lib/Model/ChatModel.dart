@@ -1,4 +1,5 @@
 class ChatModel {
+  final int? id;
   final String? name;
   final String? icon;
   final bool? isGroup;
@@ -7,7 +8,8 @@ class ChatModel {
   final String? currentMessage;
   bool select = false;
   ChatModel(
-      {this.name,
+      {this.id,
+      this.name,
       this.icon,
       this.isGroup,
       this.time,

@@ -1,11 +1,14 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:pratham_app/Model/ChatModel.dart';
 import 'package:pratham_app/Pages/CameraPage.dart';
 import 'package:pratham_app/Pages/ChatPage.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({Key? key}) : super(key: key);
-
+  const HomeScreen({Key? key, required this.chats, required this.sourceChat})
+      : super(key: key);
+  final List<ChatModel> chats;
+  final ChatModel sourceChat;
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
@@ -90,7 +93,10 @@ class _HomeScreenState extends State<HomeScreen>
                 );
               },
               icon: const Icon(Icons.camera_alt)),
-          ChatPage(),
+          ChatPage(
+            chats: widget.chats,
+            sourceChat: widget.sourceChat,
+          ),
           Text("Status"),
           Text("Calls")
         ],
