@@ -26,6 +26,9 @@ class MyApp extends StatelessWidget {
             background: const Color.fromRGBO(200, 241, 229, 1),
             primaryVariant: const Color.fromRGBO(255, 255, 255, 1.0),
             secondaryVariant: const Color.fromRGBO(147, 254, 245, 1.0),
+
+
+
           ),
           // primaryColor: Color.fromRGBO(15, 185, 177, 1),
           // secondaryHeaderColor: Color.fromRGBO(69, 170, 242, 1),
