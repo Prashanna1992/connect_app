@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:pratham_app/Model/ChatModel.dart';
 import 'package:pratham_app/Pages/CameraPage.dart';
 import 'package:pratham_app/Pages/ChatPage.dart';
+import 'package:pratham_app/Pages/StatusPage.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key, required this.chats, required this.sourceChat})
@@ -97,7 +98,7 @@ class _HomeScreenState extends State<HomeScreen>
             chats: widget.chats,
             sourceChat: widget.sourceChat,
           ),
-          Text("Status"),
+          StatusPage(),
           Text("Calls")
         ],
       ),

@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 
 class UserMessage extends StatelessWidget {
-  const UserMessage({Key? key, required this.message}) : super(key: key);
+  const UserMessage({Key? key, required this.message, required this.time})
+      : super(key: key);
   final String message;
+  final String time;
   @override
   Widget build(BuildContext context) {
     return Align(
       alignment: Alignment.centerRight,
       child: ConstrainedBox(
         constraints: BoxConstraints(
-            maxWidth: MediaQuery.of(context).size.width - 80, minWidth: 120),
+            maxWidth: MediaQuery.of(context).size.width - 80, minWidth: 140),
         child: Card(
           elevation: 5,
           shape: const RoundedRectangleBorder(
@@ -22,11 +24,11 @@ class UserMessage extends StatelessWidget {
             children: [
               Padding(
                 padding: const EdgeInsets.only(
-                    top: 15, bottom: 15, left: 15, right: 15),
+                    top: 15, bottom: 25, left: 15, right: 15),
                 child: Text(
                   message,
                   style: const TextStyle(
-                    fontSize: 15,
+                    fontSize: 20,
                   ),
                 ),
               ),
@@ -35,9 +37,10 @@ class UserMessage extends StatelessWidget {
                 right: 10,
                 child: Row(
                   children: [
-                    const Text(
-                      "12:24 pm",
-                      style: TextStyle(fontSize: 12, color: Colors.black54),
+                    Text(
+                      time,
+                      style:
+                          const TextStyle(fontSize: 12, color: Colors.black54),
                     ),
                     Icon(
                       Icons.done_all,

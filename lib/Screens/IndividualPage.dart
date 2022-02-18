@@ -1,3 +1,6 @@
+import 'dart:async';
+import 'package:intl/intl.dart';
+
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:pratham_app/CustomUI/ReplyMessage.dart';
@@ -24,10 +27,11 @@ class _IndividualPageState extends State<IndividualPage> {
   bool sendButton = false;
   late IO.Socket socket;
   List<MessageModel> messages = [];
-  TextEditingController _controller = TextEditingController();
+  final TextEditingController _controller = TextEditingController();
+  ScrollController _scrollController = ScrollController();
 
   void connect() {
-    socket = IO.io("http://192.168.10.68:5000", <String, dynamic>{
+    socket = IO.io("https://polar-harbor-55611.herokuapp.com/", <String, dynamic>{
       "transports": ["websocket"],
       "autoconnect": false,
     });
@@ -35,7 +39,8 @@ class _IndividualPageState extends State<IndividualPage> {
     socket.onConnect((request) {
       socket.on("sendMessage", (request) {
         setMessage("received", request["message"]);
-        print(request);
+        _scrollController.animateTo(_scrollController.position.maxScrollExtent,
+            duration: const Duration(milliseconds: 300), curve: Curves.easeOut);
       });
     });
     socket.emit("verifyUser", widget.sourceChat.id);
@@ -51,7 +56,10 @@ class _IndividualPageState extends State<IndividualPage> {
   }
 
   void setMessage(String type, String message) {
-    MessageModel messageModel = MessageModel(type: type, message: message);
+    DateTime now = DateTime.now();
+    String formattedTime = DateFormat().add_jm().format(now);
+    MessageModel messageModel =
+        MessageModel(type: type, message: message, time: formattedTime);
     setState(() {
       setState(() {
         messages.add(messageModel);
@@ -156,134 +164,137 @@ class _IndividualPageState extends State<IndividualPage> {
               })
             ],
           ),
-          body: Container(
+          body: SizedBox(
             height: MediaQuery.of(context).size.height,
             width: MediaQuery.of(context).size.width,
-            child: Stack(
+            child: Column(
               children: [
-                Container(
-                  height: MediaQuery.of(context).size.height - 146,
+                Expanded(
                   child: ListView.builder(
+                    controller: _scrollController,
                     shrinkWrap: true,
                     itemCount: messages.length,
                     itemBuilder: (context, index) {
                       if (messages[index].type == "sent") {
-                        return UserMessage(message: messages[index].message);
+                        return UserMessage(
+                          message: messages[index].message,
+                          time: messages[index].time,
+                        );
                       } else {
-                        return ReplyMessage(message: messages[index].message);
+                        return ReplyMessage(
+                          message: messages[index].message,
+                          time: messages[index].time,
+                        );
                       }
                     },
                   ),
                 ),
-                Align(
-                  alignment: Alignment.center,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Row(
-                        children: [
-                          Container(
-                            width: MediaQuery.of(context).size.width - 55,
-                            child: Card(
-                              margin: const EdgeInsets.only(
-                                  left: 10, right: 3, bottom: 8, top: 5),
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(25)),
-                              child: TextFormField(
-                                controller: _controller,
-                                onChanged: (value) {
-                                  if (value.isNotEmpty) {
-                                    setState(() {
-                                      sendButton = true;
-                                    });
-                                  } else {
-                                    setState(() {
-                                      sendButton = false;
-                                    });
-                                  }
-                                },
-                                textAlignVertical: TextAlignVertical.center,
-                                keyboardType: TextInputType.multiline,
-                                maxLines: 5,
-                                minLines: 1,
-                                decoration: InputDecoration(
-                                    enabledBorder: const UnderlineInputBorder(
-                                      borderSide:
-                                          BorderSide(color: Colors.transparent),
-                                    ),
-                                    focusedBorder: const UnderlineInputBorder(
-                                      borderSide:
-                                          BorderSide(color: Colors.transparent),
-                                    ),
-                                    hintText: "Type message here...",
-                                    contentPadding: const EdgeInsets.all(10),
-                                    // prefixIcon: IconButton(
-                                    //   icon: Icon(Icons.emoji_emotions),
-                                    //   onPressed: () {
-                                    //     show = !show;
-                                    //     print(show);
-                                    //   },
-                                    // ),
-                                    suffixIcon: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        IconButton(
-                                            onPressed: () {
-                                              showModalBottomSheet(
-                                                  backgroundColor:
-                                                      Colors.transparent,
-                                                  context: context,
-                                                  builder: (builder) =>
-                                                      bottomSheet());
-                                            },
-                                            icon:
-                                                const Icon(Icons.attach_file)),
-                                        IconButton(
-                                            onPressed: () async {
-                                              await availableCameras().then(
-                                                (value) => Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        CameraPage(
-                                                      cameras: value,
-                                                    ),
-                                                  ),
-                                                ),
-                                              );
-                                            },
-                                            icon: const Icon(Icons.camera_alt))
-                                      ],
-                                    )),
+                Row(
+                  children: [
+                    Expanded(
+                      // width: MediaQuery.of(context).size.width - 55,
+                      child: Card(
+                        margin: const EdgeInsets.only(
+                            left: 10, right: 3, bottom: 8, top: 5),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(25)),
+                        child: TextFormField(
+                          controller: _controller,
+                          onTap: () {},
+                          onChanged: (value) {
+                            if (value.isNotEmpty) {
+                              setState(() {
+                                sendButton = true;
+                              });
+                            } else {
+                              setState(() {
+                                sendButton = false;
+                              });
+                            }
+                          },
+                          textAlignVertical: TextAlignVertical.center,
+                          keyboardType: TextInputType.multiline,
+                          maxLines: 5,
+                          minLines: 1,
+                          decoration: InputDecoration(
+                              enabledBorder: const UnderlineInputBorder(
+                                borderSide:
+                                    BorderSide(color: Colors.transparent),
                               ),
-                            ),
-                          ),
-                          CircleAvatar(
-                            radius: 24,
-                            backgroundColor:
-                                const Color.fromRGBO(15, 185, 177, 1),
-                            child: sendButton
-                                ? IconButton(
-                                    icon: const Icon(Icons.send),
-                                    color: Colors.white,
-                                    onPressed: () {
-                                      sendMessage(
-                                          _controller.text,
-                                          widget.sourceChat.id!,
-                                          widget.chatModel.id!);
-                                      _controller.clear();
-                                    },
-                                  )
-                                : IconButton(
-                                    icon: const Icon(Icons.mic),
-                                    color: Colors.white,
-                                    onPressed: () {},
-                                  ),
-                          )
-                        ],
+                              focusedBorder: const UnderlineInputBorder(
+                                borderSide:
+                                    BorderSide(color: Colors.transparent),
+                              ),
+                              hintText: "Type message here...",
+                              contentPadding: const EdgeInsets.all(10),
+                              // prefixIcon: IconButton(
+                              //   icon: Icon(Icons.emoji_emotions),
+                              //   onPressed: () {
+                              //     show = !show;
+                              //     print(show);
+                              //   },
+                              // ),
+                              suffixIcon: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  IconButton(
+                                      onPressed: () {
+                                        showModalBottomSheet(
+                                            backgroundColor: Colors.transparent,
+                                            context: context,
+                                            builder: (builder) =>
+                                                bottomSheet());
+                                      },
+                                      icon: const Icon(Icons.attach_file)),
+                                  IconButton(
+                                      onPressed: () async {
+                                        await availableCameras().then(
+                                          (value) => Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) => CameraPage(
+                                                cameras: value,
+                                              ),
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                      icon: const Icon(Icons.camera_alt))
+                                ],
+                              )),
+                        ),
                       ),
-                    ],
-                  ),
+                    ),
+                    CircleAvatar(
+                      radius: 24,
+                      backgroundColor: const Color.fromRGBO(15, 185, 177, 1),
+                      child: sendButton
+                          ? IconButton(
+                              icon: const Icon(Icons.send),
+                              color: Colors.white,
+                              onPressed: () {
+                                _scrollController.animateTo(
+                                    _scrollController.position.maxScrollExtent,
+                                    duration: const Duration(milliseconds: 300),
+                                    curve: Curves.easeOut);
+                                sendMessage(
+                                  _controller.text,
+                                  widget.sourceChat.id!,
+                                  widget.chatModel.id!,
+                                );
+                                setState(() {
+                                  sendButton = false;
+                                });
+                                _controller.clear();
+                              },
+                            )
+                          : IconButton(
+                              icon: const Icon(Icons.mic),
+                              color: Colors.white,
+                              onPressed: () {},
+                            ),
+                    )
+                  ],
                 )
               ],
             ),
