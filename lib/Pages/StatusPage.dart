@@ -60,12 +60,16 @@ class _StatusPageState extends State<StatusPage> {
               updatedAt: timeago
                   .format(DateTime.now().subtract(const Duration(minutes: 14))),
               image: "assets/motu.jpg",
+              isSeen: false,
+              statusCount: 5,
             ),
             ContactStatus(
               name: "Kabita",
               updatedAt: timeago
                   .format(DateTime.now().subtract(const Duration(minutes: 28))),
               image: "assets/missramen.jpg",
+              isSeen: false,
+              statusCount: 2,
             ),
             const Divider(
               height: 20,
@@ -79,6 +83,8 @@ class _StatusPageState extends State<StatusPage> {
               name: "Ujjwal",
               updatedAt: timeago
                   .format(DateTime.now().subtract(const Duration(minutes: 35))),
+              isSeen: true,
+              statusCount: 2,
             ),
           ],
         ),
