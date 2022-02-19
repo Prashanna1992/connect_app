@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:path/path.dart';
 import 'package:pratham_app/Pages/CameraPage.dart';
 import 'package:pratham_app/Screens/HomeScreen.dart';
-import 'package:pratham_app/Screens/LoginScreen.dart';
-import 'package:pratham_app/Screens/WelcomeScreen.dart';
+import 'package:pratham_app/Screens/WelcomeScreens/LoginScreen.dart';
+import 'package:pratham_app/Screens/WelcomeScreens/WelcomeScreen.dart';
 
 import 'Screens/CameraScreen.dart';
 
@@ -33,7 +33,7 @@ class MyApp extends StatelessWidget {
           scaffoldBackgroundColor: Colors.white,
           fontFamily: "Raleway",
           brightness: Brightness.light),
-      home: const LoginScreen(),
+      home: WelcomeScreen(),
     );
   }
 }
