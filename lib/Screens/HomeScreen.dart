@@ -19,7 +19,7 @@ class _HomeScreenState extends State<HomeScreen>
   late TabController tabController;
   @override
   void initState() {
-    tabController = TabController(length: 4, vsync: this, initialIndex: 1);
+    tabController = TabController(length: 3, vsync: this, initialIndex: 0);
     // TODO: implement initState
     super.initState();
   }
@@ -63,9 +63,6 @@ class _HomeScreenState extends State<HomeScreen>
           controller: tabController,
           tabs: const [
             Tab(
-              icon: Icon(Icons.camera_alt),
-            ),
-            Tab(
               text: "Message",
             ),
             Tab(
@@ -80,20 +77,6 @@ class _HomeScreenState extends State<HomeScreen>
       body: TabBarView(
         controller: tabController,
         children: [
-          IconButton(
-              onPressed: () async {
-                await availableCameras().then(
-                  (value) => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => CameraPage(
-                        cameras: value,
-                      ),
-                    ),
-                  ),
-                );
-              },
-              icon: const Icon(Icons.camera_alt)),
           ChatPage(
             chats: widget.chats,
             sourceChat: widget.sourceChat,

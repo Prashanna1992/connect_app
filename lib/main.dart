@@ -1,19 +1,14 @@
-import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
-import 'package:path/path.dart';
-import 'package:pratham_app/Pages/CameraPage.dart';
-import 'package:pratham_app/Screens/HomeScreen.dart';
-import 'package:pratham_app/Screens/WelcomeScreens/LoginScreen.dart';
 import 'package:pratham_app/Screens/WelcomeScreens/WelcomeScreen.dart';
-
-import 'Screens/CameraScreen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -33,7 +28,7 @@ class MyApp extends StatelessWidget {
           scaffoldBackgroundColor: Colors.white,
           fontFamily: "Raleway",
           brightness: Brightness.light),
-      home: WelcomeScreen(),
+      home: const WelcomeScreen(),
     );
   }
 }

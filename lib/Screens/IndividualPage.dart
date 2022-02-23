@@ -3,12 +3,16 @@ import 'package:intl/intl.dart';
 
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:pratham_app/CustomUI/ImageCard.dart';
 import 'package:pratham_app/CustomUI/ReplyMessage.dart';
 import 'package:pratham_app/CustomUI/UserMessage.dart';
 import 'package:pratham_app/Model/ChatModel.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:pratham_app/Model/MessageModel.dart';
 import 'package:pratham_app/Pages/CameraPage.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:pratham_app/Screens/CameraScreen.dart';
+import 'package:pratham_app/Screens/PhotoView.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 class IndividualPage extends StatefulWidget {
@@ -28,17 +32,20 @@ class _IndividualPageState extends State<IndividualPage> {
   late IO.Socket socket;
   List<MessageModel> messages = [];
   final TextEditingController _controller = TextEditingController();
-  ScrollController _scrollController = ScrollController();
+  final ScrollController _scrollController = ScrollController();
+  final ImagePicker _picker = ImagePicker();
+  XFile? pickedFile;
 
   void connect() {
-    socket = IO.io("https://polar-harbor-55611.herokuapp.com/", <String, dynamic>{
+    socket =
+        IO.io("https://polar-harbor-55611.herokuapp.com/", <String, dynamic>{
       "transports": ["websocket"],
       "autoconnect": false,
     });
     socket.connect();
     socket.onConnect((request) {
       socket.on("sendMessage", (request) {
-        setMessage("received", request["message"]);
+        setMessage("received", request["message"], request["imagePath"]);
         _scrollController.animateTo(_scrollController.position.maxScrollExtent,
             duration: const Duration(milliseconds: 300), curve: Curves.easeOut);
       });
@@ -46,16 +53,18 @@ class _IndividualPageState extends State<IndividualPage> {
     socket.emit("verifyUser", widget.sourceChat.id);
   }
 
-  void sendMessage(String message, int sourceId, int destinationId) {
-    setMessage("sent", message);
+  void sendMessage(
+      String message, int sourceId, int destinationId, String imagePath) {
+    setMessage("sent", message, imagePath);
     socket.emit("sendMessage", {
       "message": message,
       "sourceId": sourceId,
-      "destinationId": destinationId
+      "destinationId": destinationId,
+      "path": imagePath
     });
   }
 
-  void setMessage(String type, String message) {
+  void setMessage(String type, String message, String imagePath) {
     DateTime now = DateTime.now();
     String formattedTime = DateFormat().add_jm().format(now);
     MessageModel messageModel =
@@ -254,6 +263,7 @@ class _IndividualPageState extends State<IndividualPage> {
                                             MaterialPageRoute(
                                               builder: (context) => CameraPage(
                                                 cameras: value,
+                                                onImageSend: () => onImageSend,
                                               ),
                                             ),
                                           ),
@@ -278,10 +288,10 @@ class _IndividualPageState extends State<IndividualPage> {
                                     duration: const Duration(milliseconds: 300),
                                     curve: Curves.easeOut);
                                 sendMessage(
-                                  _controller.text,
-                                  widget.sourceChat.id!,
-                                  widget.chatModel.id!,
-                                );
+                                    _controller.text,
+                                    widget.sourceChat.id!,
+                                    widget.chatModel.id!,
+                                    "");
                                 setState(() {
                                   sendButton = false;
                                 });
@@ -319,10 +329,12 @@ class _IndividualPageState extends State<IndividualPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 mainAxisSize: MainAxisSize.max,
                 children: [
-                  iconCreator(
-                      Icons.insert_drive_file, Colors.indigo, "Document"),
-                  iconCreator(Icons.camera_alt, Colors.pink, "Camera"),
-                  iconCreator(Icons.insert_photo, Colors.purple, "Gallery")
+                  iconCreator(Icons.insert_drive_file, Colors.indigo,
+                      "Document", () {}),
+                  iconCreator(Icons.camera_alt, Colors.pink, "Camera",
+                      () => pickCameraImage()),
+                  iconCreator(Icons.insert_photo, Colors.purple, "Gallery",
+                      () => pickGalleryImage())
                 ],
               ),
             ),
@@ -332,9 +344,10 @@ class _IndividualPageState extends State<IndividualPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 mainAxisSize: MainAxisSize.max,
                 children: [
-                  iconCreator(Icons.headset, Colors.orange, "Audio"),
-                  iconCreator(Icons.location_pin, Colors.pink, "Location"),
-                  iconCreator(Icons.person, Colors.blue, "Contact")
+                  iconCreator(Icons.headset, Colors.orange, "Audio", () {}),
+                  iconCreator(
+                      Icons.location_pin, Colors.pink, "Location", () {}),
+                  iconCreator(Icons.person, Colors.blue, "Contact", () {})
                 ],
               ),
             )
@@ -344,9 +357,10 @@ class _IndividualPageState extends State<IndividualPage> {
     );
   }
 
-  Widget iconCreator(IconData iconData, Color color, String text) {
+  Widget iconCreator(
+      IconData iconData, Color color, String text, Function onTap) {
     return InkWell(
-      onTap: () {},
+      onTap: () => onTap(),
       child: Column(
         children: [
           CircleAvatar(
@@ -365,5 +379,37 @@ class _IndividualPageState extends State<IndividualPage> {
         ],
       ),
     );
+  }
+
+  Future pickGalleryImage() async {
+    pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+
+    if (pickedFile != null) {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (builder) => PhotoView(
+                    path: pickedFile != null ? pickedFile!.path : "",
+                    onImageSend: () => onImageSend,
+                  )));
+    }
+  }
+
+  void pickCameraImage() async {
+    await availableCameras().then(
+      (value) => Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => CameraPage(
+            cameras: value,
+            onImageSend: () => onImageSend,
+          ),
+        ),
+      ),
+    );
+  }
+
+  void onImageSend(String path) {
+    print("Working Path : $path");
   }
 }

@@ -3,8 +3,10 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 
 class PhotoView extends StatelessWidget {
-  const PhotoView({Key? key, required this.path}) : super(key: key);
+  const PhotoView({Key? key, required this.path, required this.onImageSend})
+      : super(key: key);
   final String path;
+  final Function onImageSend;
 
   @override
   Widget build(BuildContext context) {
@@ -58,13 +60,19 @@ class PhotoView extends StatelessWidget {
                         color: Colors.white,
                         fontSize: 17,
                       ),
-                      suffixIcon: CircleAvatar(
-                        radius: 15,
-                        backgroundColor: Theme.of(context).colorScheme.primary,
-                        child: const Icon(
-                          Icons.check,
-                          color: Colors.white,
-                          size: 25,
+                      suffixIcon: InkWell(
+                        onTap: () {
+                          onImageSend;
+                        },
+                        child: CircleAvatar(
+                          radius: 15,
+                          backgroundColor:
+                              Theme.of(context).colorScheme.primary,
+                          child: const Icon(
+                            Icons.check,
+                            color: Colors.white,
+                            size: 25,
+                          ),
                         ),
                       ),
                       border: InputBorder.none,

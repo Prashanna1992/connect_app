@@ -11,8 +11,9 @@ import 'package:pratham_app/Screens/VideoView.dart';
 
 class CameraScreen extends StatefulWidget {
   final List<CameraDescription>? cameras;
-  const CameraScreen({this.cameras, Key? key}) : super(key: key);
-
+  const CameraScreen({this.cameras, Key? key, required this.onImageSend})
+      : super(key: key);
+  final Function onImageSend;
   @override
   _CameraScreenState createState() => _CameraScreenState();
 }
@@ -189,6 +190,7 @@ class _CameraScreenState extends State<CameraScreen> {
         MaterialPageRoute(
             builder: (builder) => PhotoView(
                   path: pictureFile!.path,
+                  onImageSend: widget.onImageSend(),
                 )));
   }
 

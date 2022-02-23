@@ -77,8 +77,10 @@ class _OTPScreenState extends State<OTPScreen> {
                 if (pin?.length == 6) {}
               },
               onCompleted: (pin) {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (builder) => LoginScreen()));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (builder) => const LoginScreen()));
               },
             ),
             const SizedBox(
