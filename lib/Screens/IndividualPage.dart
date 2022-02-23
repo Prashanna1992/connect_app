@@ -35,20 +35,22 @@ class _IndividualPageState extends State<IndividualPage> {
   final ScrollController _scrollController = ScrollController();
   final ImagePicker _picker = ImagePicker();
   XFile? pickedFile;
-
+  final String herokuAppURL = "https://polar-harbor-55611.herokuapp.com/";
   void connect() {
-    socket =
-        IO.io("https://polar-harbor-55611.herokuapp.com/", <String, dynamic>{
+    socket = IO.io(herokuAppURL, <String, dynamic>{
       "transports": ["websocket"],
       "autoconnect": false,
     });
+
     socket.connect();
+
     socket.onConnect((request) {
       socket.on("sendMessage", (request) {
         setMessage("received", request["message"], request["imagePath"]);
         _scrollController.animateTo(_scrollController.position.maxScrollExtent,
             duration: const Duration(milliseconds: 300), curve: Curves.easeOut);
       });
+      print("Running 'connect()'");
     });
     socket.emit("verifyUser", widget.sourceChat.id);
   }
